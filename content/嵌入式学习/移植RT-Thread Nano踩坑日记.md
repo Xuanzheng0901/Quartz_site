@@ -185,7 +185,32 @@ int rt_kprintf(const char *fmt, ...)
 }
 ```
 
-再次编译烧录, 这次可以正常显示了。
+~~再次编译烧录, 这次可以正常显示了。~~
+
+2025.12.16 编辑: 
+到这里还不可以正常显示, 因为关于usart的初始化代码在板级初始化中, 但是`board.c`中关于串口的初始化代码是错误的, 而cubemx又没有给可编辑区域, 导致无法修改, 故在内核时期USART没有被初始化, 从而无法打印内核日志。用`INIT_BOARD_EXPORT`声明正确的usart初始化函数也没有用(根本不会被调用)。
+
+解决方法: 使用**懒加载**
+直接将rt_kprintf声明如下: 
+
+```c title="Core/src/main.c"
+int rt_kprintf(const char *fmt, ...)
+{
+  static int usart_is_init = 0;
+  if (!usart_is_init)
+  {  
+    MX_USART1_UART_Init();  //在第一次使用时进行初始化
+    usart_is_init = 1;
+  }
+  
+  va_list args;
+  va_start(args, fmt);
+  int length = vprintf(fmt, args);
+  //对接标准库的printf, 也可以直接用上面那一套, 加入懒加载逻辑即可
+  va_end(args);
+  return length;
+}
+```
 
 ![[嵌入式学习/assets/img_3.png]]
 
