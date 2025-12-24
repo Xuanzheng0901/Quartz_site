@@ -1,3 +1,7 @@
+---
+date : 2025-12-09
+---
+
 起因是接手了一个基于RT-Thread(为了简便, 下文称rtt) Studio 这个IDE开发的~~屎山项目~~, 尝试开发了几天, 实在是受不了rtt多此一举的硬件层抽象和反人类的外设添加步骤, 于是尝试将其移植到易于配置的CubeMX, 用更现代的CMake+CLion进行开发。
 # CubeMX的配置项
 
@@ -15,7 +19,8 @@
 ![[嵌入式学习/assets/img_2.png]]
  在 `Code Generation` 中将 `Hard Fault interrupt` 、`Pendable ...` 、`Time Base...` 这三个中断函数取消勾选, 因为rtt会定义它们,不需要CubeMX生成。
 ## 4. 配置SYS
-:memo: **注意:** 将系统的时钟源保持为`SysTick`, 在生成代码时会报警告,直接忽视。使用`SysTick`之外的定时器源会导致rtt的时钟出问题, Tick速度变快。
+> [!warning]
+> 将系统的时钟源保持为`SysTick`, 在生成代码时如果报警告, 直接忽视即可。使用 `SysTick`之外的定时器源会导致rtt的时钟出问题, Tick速度变快一倍。不清楚是什么原因导致的。~~其实是我懒得查。~~
 ## 5. 配置USART1
 默认配置即可。rtt打印日志默认使用USART1, 不启用会导致编译不通过。
 
@@ -191,6 +196,7 @@ int rt_kprintf(const char *fmt, ...)
 到这里还不可以正常显示, 因为关于usart的初始化代码在板级初始化中, 但是`board.c`中关于串口的初始化代码是错误的, 而cubemx又没有给可编辑区域, 导致无法修改, 故在内核时期USART没有被初始化, 从而无法打印内核日志。用`INIT_BOARD_EXPORT`声明正确的usart初始化函数也没有用(根本不会被调用)。
 
 解决方法: 使用**懒加载**
+
 直接将rt_kprintf声明如下: 
 
 ```c title="Core/src/main.c"
@@ -214,4 +220,5 @@ int rt_kprintf(const char *fmt, ...)
 
 ![[嵌入式学习/assets/img_3.png]]
 
-至此移植完成, 可以在CMake平台使用rtt核心且使用HAL库的原生API了。
+>[!success]
+> 至此移植完成, 可以在CMake平台使用rtt核心且使用HAL库的原生API了。

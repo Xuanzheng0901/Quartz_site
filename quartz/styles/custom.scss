@@ -1,3 +1,22 @@
 @use "./base.scss";
 
-// put your custom CSS here!
+/* 调整标题区域（面包屑和文章标题）的顶部间距 */
+.page-header {
+    margin-top: 0 !important;
+}
+
+.right.sidebar {
+    padding-top: 32 !important;
+}
+
+/* 调整窄屏下滚动位置，避免内容被固定头部遮挡 */
+@media all and (max-width: 800px) {
+    html {
+        scroll-padding-top: 80px;
+    } 
+}
+
+// 宽屏也调整一下
+html {
+    scroll-padding-top: 20px; 
+}
