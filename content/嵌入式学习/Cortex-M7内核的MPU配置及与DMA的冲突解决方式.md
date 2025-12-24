@@ -76,9 +76,9 @@ __attribute__((section(".Rx_PoolSection"))) extern u8_t memp_memory_RX_POOL_base
 
 >[!info] 
 >关于链接脚本(.ld文件)的语法等, 详见: [GNU ld linker script 介绍](https://github.com/iDalink/ld-linker-script)
->由于这里涉及到比较深层的编译器知识, 所以**不用深入了解**, 只需在需要时将你的链接脚本和代码丢给AI并清楚描述需求即可。
+>>[!note]这里涉及到比较深层的编译器知识, **不必深入了解**, 并且由于不同具体情况下所需的链接脚本代码也大相径庭, *所以只需在需要时将你的链接脚本和代码丢给AI并清楚描述需求即可*。
 
-重新加载CMake并编译即可将内存放到对应位置
+重新加载CMake并编译即可将数据放到内存对应位置
 ## 3. 第二个问题
 ### 3.1 问题
 按照如上方法更改之后, 发现依然不正常, 报错如下: 
