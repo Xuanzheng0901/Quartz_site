@@ -1,3 +1,8 @@
+---
+date: 2025-12-24
+---
+
+
 适用于ARM Cortex-M7内核(STM32H7、F7等系列)
 
 ARM在高端的Cortex-M7上新增了一些内存保护的功能(RAMECC、MPU(Memory Protect Unit)等), 导致我在使用这个高级平台时碰壁好多次 , 简单记录一下我踩的坑和解决方式。
