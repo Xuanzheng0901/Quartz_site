@@ -1,22 +1,21 @@
 ---
 date : 2025-12-09
 ---
-
 起因是接手了一个基于RT-Thread(为了简便, 下文称rtt) Studio 这个IDE开发的~~屎山项目~~, 尝试开发了几天, 实在是受不了rtt多此一举的硬件层抽象和反人类的外设添加步骤, 于是尝试将其移植到易于配置的CubeMX, 用更现代的CMake+CLion进行开发。
 # CubeMX的配置项
 
 > 本文基于 #STM32CubeMX 6.15.0、 #RT-Thread  nano 4.1.1
 	
 ## 1. 在组件管理器中安装并启用rtt
-![[嵌入式学习/assets/img_0.png]]勾选kernel和libcpu, shell也要选, 否则无法使用 `rt_krprinf` 打印日志
+![[嵌入式学习/assets/移植RT-Thread Nano踩坑日记-5.png]]勾选kernel和libcpu, shell也要选, 否则无法使用 `rt_krprinf` 打印日志
 >  我一开始没有勾shell,编译会报错, 看了报错代码, 是找不到 `finsh.h` , 但我想, 没有勾选shell怎么会启用finsh呢? 然后我勾选了shell就能编译通过了, 才发现多了一个配置是否启用shell的选项, 而这个选项对应的宏 `RT_USING_FINSH` 是默认启用的, 也就是说想要禁用这个终端就必须先启用shell, 才能将其禁用。
 ## 2. 配置rtt 
- ![[嵌入式学习/assets/img_1.png]]
+ ![[嵌入式学习/assets/移植RT-Thread Nano踩坑日记-6.png]]
     - 把 `Using Rtt components initialazition` 和 `Using user main` 启用, 使用rtt的初始化逻辑。这里有个[伏笔](#伏笔回收)。
 	- `Debug` 和 `Hook` 选项按需启用
 	- 内存管理这里据说RTT有一套自己的内存管理算法, 可以启用。
 ## 3. 配置NVIC
-![[嵌入式学习/assets/img_2.png]]
+![[嵌入式学习/assets/移植RT-Thread Nano踩坑日记-7.png]]
  在 `Code Generation` 中将 `Hard Fault interrupt` 、`Pendable ...` 、`Time Base...` 这三个中断函数取消勾选, 因为rtt会定义它们,不需要CubeMX生成。
 ## 4. 配置SYS
 > [!warning]
@@ -218,7 +217,7 @@ int rt_kprintf(const char *fmt, ...)
 }
 ```
 
-![[嵌入式学习/assets/img_3.png]]
+![[嵌入式学习/assets/移植RT-Thread Nano踩坑日记-8.png]]
 
 >[!success]
 > 至此移植完成, 可以在CMake平台使用rtt核心且使用HAL库的原生API了。

@@ -238,3 +238,40 @@ TYPE_ADD_FUNC(int) // 生成 int int_add(int a, int b)...
 TYPE_ADD_FUNC(float) // 生成 float float_add(float a, float b)...
 
 ```
+
+3. 变参宏(`__VA_ARGS__`)
+可用于像printf一样接受可变长的参数
+
+```
+#define LOG(fmt, ...) printf("[LOG] " fmt "\n", ##__VA_ARGS__)
+```
+
+其中`##__VA_ARGS__`前面的##用于在无可变参数时删掉前面尾随的逗号。(c99引入特性)
+
+4. 预定义宏
+```c
+__FILE__ //当前文件名
+__LINE__ //当前行号
+__DATE__ __TIME__ //编译时的日期和时间
+__func__ //当前函数名
+```
+
+## 条件编译 
+
+就是if/else 
+
+只不过是在编译期确定分支执行。常用于Kconfig和多平台适配等
+
+```c
+#if defined ( __ICCARM__ ) /*!< IAR Compiler */  
+#pragma location = 0x30000100  
+extern u8_t memp_memory_RX_POOL_base[];  
+  
+#elif defined ( __CC_ARM ) /* MDK ARM Compiler */  
+__attribute__((section(".Rx_PoolSection"))) extern u8_t memp_memory_RX_POOL_base[];  
+  
+#elif defined ( __GNUC__ ) /* GNU */  
+__attribute__((section(".Rx_PoolSection"))) extern u8_t memp_memory_RX_POOL_base[];  
+#endif
+```
+最后需要用`#endif`收尾。

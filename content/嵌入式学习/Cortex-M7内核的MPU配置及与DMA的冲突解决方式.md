@@ -54,7 +54,7 @@ __attribute__((section(".Rx_PoolSection"))) extern u8_t memp_memory_RX_POOL_base
 #endif
 ```
 
-![[嵌入式学习/assets/Pasted image 20251224203249.png]]
+![[嵌入式学习/assets/Cortex-M7内核的MPU配置及与DMA的冲突解决方式-5.png]]
 
 
 ### 2.2 解决方式: 修改链接脚本
@@ -115,6 +115,6 @@ hard fault on thread: eth_rx
 1. 更改权限为可读写
 2. 开启Shareable, 关闭Cacheable和Bufferable
 3. 将TEX field level设为1
-![[嵌入式学习/assets/Pasted image 20251224221156.png]]
+![[嵌入式学习/assets/Cortex-M7内核的MPU配置及与DMA的冲突解决方式-6.png]]
 
 这样即可。
