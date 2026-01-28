@@ -1,6 +1,6 @@
-FreeRTOS是开源的**实时操作系统(Real Time Operation System, RTOS)**。
+FreeRTOS是开源的**实时操作系统(Real Time Operation System, RTOS)**
 
-## 什么是RTOS
+# 什么是RTOS
 
 很多人看到操作系统这个字眼就下意识觉得这东西和Windows、Linux等系统一样, 是庞大复杂的东西, 从而望而生畏。但在嵌入式领域, RTOS是广泛应用的, 且上手门槛并不高。
 
@@ -8,7 +8,15 @@ FreeRTOS是开源的**实时操作系统(Real Time Operation System, RTOS)**。
 
 >[!info] 在嵌入式网络编程中, 启用RTOS是`LwIP`中支持socket/netconn API的必需条件
 
-## 开始
+> [为什么使用FreeRTOS?](https://www.freertos.org/zh-cn-cmn-s/Why-FreeRTOS/Why-FreeRTOS)
+
+# 开始
+
+> [!info] 以下所有内容是面向新手、便于理解的版本。更细节的编程手册详见:
+> - [FreeRTOS官网](https://www.freertos.org/zh-cn-cmn-s/Documentation/00-Overview)
+> - [FreeRTOS 初学者指南](https://www.freertos.org/zh-cn-cmn-s/Documentation/01-FreeRTOS-quick-start/01-Beginners-guide/00-Overview)
+> - [API Reference](https://www.freertos.org/zh-cn-cmn-s/Documentation/02-Kernel/04-API-references/01-Task-creation/00-TaskHandle)
+
 
 这里不讨论关于RTOS移植到新平台的问题, 只基于现有平台(STM32CubeMX、ESP-IDF)。
 
@@ -118,9 +126,11 @@ void app_main(void)
 
 以上就是STM32平台下FreeRTOS的初始化流程。对的非常简便, 我们不需要与操作系统交互, 只写业务代码即可
 
-## RTOS 基本用法
+# RTOS 基本用法
 
-1. 任务相关API
+> 以下组件标题可点击查看官网的文档
+
+1. [任务相关](https://www.freertos.org/zh-cn-cmn-s/Documentation/02-Kernel/02-Kernel-features/01-Tasks-and-co-routines/05-Implementing-a-task)
 - 创建任务
 ```c
 函数原型:
@@ -162,9 +172,9 @@ void app_main()
 
 - 删除任务
 
-    >[!tip]
-    >
-    >FreeRTOS中任务函数不可以返回, 必须由`vTaskDelete`删除
+>[!tip]
+>
+>FreeRTOS中任务函数不可以返回, 必须由`vTaskDelete`删除
 
 ```c {5,20}
 void app_main()
@@ -202,15 +212,15 @@ vTaskResume(taskHandle);
 //恢复任务运行 只能由其他任务调用(因为暂停了不能恢复自身)
 ```
 
-## RTOS组件
+# RTOS组件
 
 多线程引入了问题: 线程间通信和同步、竞态等
 
-### 线程间通信
+## 线程间通信
 
-1. 事件组(`EventGroup`)
+### [事件组(`EventGroup`)](https://www.freertos.org/zh-cn-cmn-s/Documentation/02-Kernel/02-Kernel-features/06-Event-groups)
 
-    即一个32位整数, 每一位都代表一个标志位(Flag).
+- 即一个32位整数, 每一位都代表一个标志位(Flag).
     适合传递多个状态的组合。
     
 ```c
@@ -275,13 +285,13 @@ void Init_App(void)
 }
 ```
 
-2. 消息队列(`Queue`)
+### [消息队列(`Queue`)](https://www.freertos.org/zh-cn-cmn-s/Documentation/02-Kernel/02-Kernel-features/02-Queues-mutexes-and-semaphores/01-Queues)
 
-    可存放指定个数的指定大小的数据。
+- 可存放指定个数的指定大小的数据。
 
-    队列会将接收的数据复制一份保存, 所以如果数据量很大, 可以使用静态缓冲区, 传递缓冲区的指针。
+- 队列会将接收的数据复制一份保存, 所以如果数据量很大, 可以使用静态缓冲区, 传递缓冲区的指针。
 
-    发送方在队列满、接收方在队列空时均可可阻塞等待。
+- 发送方在队列满、接收方在队列空时均可可阻塞等待。
 
 ```c
 //Example by Gemini
@@ -350,9 +360,52 @@ void Init_App(void)
 }
 ```
 
-3. 消息通知(`TaskNotify`)
+### [消息通知(`TaskNotify`)](https://www.freertos.org/zh-cn-cmn-s/Documentation/02-Kernel/02-Kernel-features/03-Direct-to-task-notifications/01-Task-notifications)
 
-    向任务自带的邮箱中发送一个32位的整数。它的内存占用小、速度也快。
+- 向任务自带的邮箱中发送一个32位的整数。它的内存占用小、速度也快。
+
+- **限制/特点**: 一对一发送。适合传递整数命令且不需要缓存多条的情况。
+
+## 线程间同步
+
+### 信号量(`Semaphore`)
+
+即字面意思, 信号的量, 分为二值信号量(`Binary Semaphore`)、计数信号量(`Counting Semaphore`)、互斥锁(`Mutex`)、递归互斥锁(`Recursive Mutex`)
     
-    限制/特点: 一对一发送。适合传递整数命令且不需要缓存多条的情况。
+#### [二值信号量](https://www.freertos.org/zh-cn-cmn-s/Documentation/02-Kernel/02-Kernel-features/02-Queues-mutexes-and-semaphores/02-Binary-semaphores)
 
+- 只能被设为1或0, 用于记录某事件是否发生、状态是否就绪等, 并且获取到信号量后自动清零。主要用于任务间同步(在中断中发送信号量, 阻塞等待的任务被唤醒进行处理)
+
+- 当信号量被置1时只有若有多个任务在同时等待信号量, 则只有最高优先级的会被唤醒。
+
+- 相较于事件组更轻量、省资源。可以理解为只有**一位的、点对点的**事件组。
+
+ #### [计数信号量](https://www.freertos.org/zh-cn-cmn-s/Documentation/02-Kernel/02-Kernel-features/02-Queues-mutexes-and-semaphores/03-Counting-semaphores)
+
+- 每有一次`Give()`计数加一, 获取时计数减一。可用于管理有限的资源池(例如TCP netconn连接数), 拿走资源时获取信号量, 归还资源时给出信号量。
+
+#### [互斥锁](https://www.freertos.org/zh-cn-cmn-s/Documentation/02-Kernel/02-Kernel-features/02-Queues-mutexes-and-semaphores/04-Mutexes)
+
+- 为多个线程可能会同时访问的资源(变量、函数等)加锁, 持有互斥锁代表 "我现在在用这个资源, 其他线程不要访问/修改, 以免出现冲突"。
+
+- 可为高频访问、修改的缓冲区加锁以保证访问的原子性。
+
+- 持锁、释放锁的任务必须是同一个, 任务A持锁不能由任务B释放锁。
+
+- 互斥锁的特性、核心机制: **优先级继承**
+
+> [!note] 优先级继承:
+> - 场景：低优先级任务 A 占用了互斥锁，高优先级任务 B 也要用这个锁。
+> - 机制：FreeRTOS 会临时将 A 的优先级提升到与 B 一样高，让 A 尽快运行完并释放锁，从而避免 B 等待过久（解决优先级翻转问题）。但其实无法完全解决, 所以在写程序的时候就要避免任务长时间占用CPU, 从根源解决
+        
+如果没有优先级继承会导致的问题: **优先级翻转** 
+
+> [!warning] 优先级翻转:
+> - 场景: 高优先级任务A需要持锁, 但低优先级任务C已经提前持锁, 所以任务A等待C释放锁。
+> - 问题: 但此时中优先级B一直占用CPU, 导致任务C得不到处理时间, 所以无法释放锁, 从而导致A一直阻塞, 所以看上去是任务B优先于任务A运行, 即优先级翻转。
+    
+所以互斥锁就是有优先级继承、初值为1的二值信号量。
+
+#### [递归互斥锁](https://www.freertos.org/zh-cn-cmn-s/Documentation/02-Kernel/02-Kernel-features/02-Queues-mutexes-and-semaphores/05-Recursive-mutexes)
+
+和互斥锁对二值信号量的改装一样, 递归互斥锁也是对计数互斥锁的改造, 允许优先级继承, 允许一个线程多次持锁而不会发生死锁, 持锁、释放锁次数相同。
