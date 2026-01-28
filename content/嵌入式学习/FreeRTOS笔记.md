@@ -1,3 +1,12 @@
+---
+date: 2026-01-21
+tags:
+    - FreeRTOS
+    - STM32
+    - 笔记
+    - 教程
+---
+
 FreeRTOS是开源的**实时操作系统(Real Time Operation System, RTOS)**
 
 # 什么是RTOS

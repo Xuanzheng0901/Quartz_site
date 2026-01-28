@@ -1,5 +1,9 @@
 ---
 date : 2025-12-09
+tags:
+    - RT-Thread
+    - 笔记
+    - STM32
 ---
 起因是接手了一个基于RT-Thread(为了简便, 下文称rtt) Studio 这个IDE开发的~~屎山项目~~, 尝试开发了几天, 实在是受不了rtt多此一举的硬件层抽象和反人类的外设添加步骤, 于是尝试将其移植到易于配置的CubeMX, 用更现代的CMake+CLion进行开发。
 # CubeMX的配置项
