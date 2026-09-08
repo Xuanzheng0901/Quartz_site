@@ -1,6 +1,28 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 
+const dateSortedExplorer = Component.Explorer({
+  sortFn: (a, b) => {
+    if (a.isFolder !== b.isFolder) {
+      return a.isFolder ? -1 : 1
+    }
+
+    if (!a.isFolder && !b.isFolder) {
+      // The content index serializes dates as ISO strings for the browser.
+      const aDate = new Date(a.data?.date ?? "").getTime()
+      const bDate = new Date(b.data?.date ?? "").getTime()
+      const difference =
+        (Number.isFinite(bDate) ? bDate : -Infinity) - (Number.isFinite(aDate) ? aDate : -Infinity)
+      if (difference) return difference
+    }
+
+    return a.displayName.localeCompare(b.displayName, "zh-CN", {
+      numeric: true,
+      sensitivity: "base",
+    })
+  },
+})
+
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
@@ -38,7 +60,7 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    Component.Explorer(),
+    dateSortedExplorer,
   ],
   right: [
     Component.Graph(),
@@ -62,7 +84,7 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    dateSortedExplorer,
   ],
   right: [],
 }

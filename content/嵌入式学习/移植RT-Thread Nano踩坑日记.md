@@ -1,10 +1,17 @@
 ---
 date : 2025-12-09
 tags:
-    - RT-Thread
-    - 笔记
-    - STM32
+  - RT-Thread
+  - 笔记
+  - STM32
+  - RTOS
+  - 编译工具链
+  - GCC
+  - STM32CubeMX
+  - 串口
+  - 故障排查
 ---
+
 起因是接手了一个基于RT-Thread(为了简便, 下文称rtt) Studio 这个IDE开发的~~屎山项目~~, 尝试开发了几天, 实在是受不了rtt多此一举的硬件层抽象和反人类的外设添加步骤, 于是尝试将其移植到易于配置的CubeMX, 用更现代的CMake+CLion进行开发。
 # CubeMX的配置项
 
@@ -225,3 +232,10 @@ int rt_kprintf(const char *fmt, ...)
 
 >[!success]
 > 至此移植完成, 可以在CMake平台使用rtt核心且使用HAL库的原生API了。
+
+## 笔记关联
+
+- **前置阅读**：[[嵌入式学习/当我们谈论内核时, 我们在谈论什么|当我们谈论内核时, 我们在谈论什么]] — 理解调度器和内核初始化在启动过程中的位置。
+- **代码基础**：[[C/C语言中的预处理指令|C语言中的预处理指令]] — 理解 __ARMCC_VERSION、__GNUC__ 等条件编译分支。
+- **配套阅读**：[[嵌入式学习/ArmCC与GCC的printf()|ArmCC与GCC的printf()]] — 排查接入 vprintf 后的底层串口输出路径。
+- **后续实践**：[[嵌入式学习/基于RT-Thread移植LwIP|基于RT-Thread移植LwIP]] — RTOS 启动与控制台适配之后，继续整理以太网协议栈移植。

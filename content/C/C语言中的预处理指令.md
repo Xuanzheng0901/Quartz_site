@@ -1,6 +1,11 @@
 ---
 date: 2026-01-04
+tags:
+  - C语言
+  - 预处理
+  - 编译工具链
 ---
+
 
 >[!warning] 警告
 >本文中包括但不限于以下要素: 宏魔法、宏定义地狱、CONFUSING_NAMING、递归调用、栈溢出<br/>
@@ -275,3 +280,9 @@ __attribute__((section(".Rx_PoolSection"))) extern u8_t memp_memory_RX_POOL_base
 #endif
 ```
 最后需要用`#endif`收尾。
+
+## 笔记关联
+
+- **应用实例**：[[嵌入式学习/(FreeRTOS向)日志库与内存池|(FreeRTOS向)日志库与内存池]] — 日志等级、变参宏和 do-while 宏封装的实际用法。
+- **应用实例**：[[嵌入式学习/移植RT-Thread Nano踩坑日记|移植RT-Thread Nano踩坑日记]] — 通过条件编译选择编译器对应的启动入口。
+- **相关主题**：[[杂七杂八的笔记/Go语言|Go语言]] — 对照 C 的编译单元与 Go 的包、目录、文件构建入口。

@@ -1,11 +1,15 @@
 ---
 date: 2026-01-21
 tags:
-    - FreeRTOS
-    - STM32
-    - 笔记
-    - 教程
+  - FreeRTOS
+  - STM32
+  - 笔记
+  - 教程
+  - RTOS
+  - 任务通信
+  - 内存管理
 ---
+
 
 FreeRTOS是开源的**实时操作系统(Real Time Operation System, RTOS)**
 
@@ -418,3 +422,10 @@ void Init_App(void)
 #### [递归互斥锁](https://www.freertos.org/zh-cn-cmn-s/Documentation/02-Kernel/02-Kernel-features/02-Queues-mutexes-and-semaphores/05-Recursive-mutexes)
 
 和互斥锁对二值信号量的改装一样, 递归互斥锁也是对计数互斥锁的改造, 允许优先级继承, 允许一个线程多次持锁而不会发生死锁, 持锁、释放锁次数相同。
+
+## 笔记关联
+
+- **前置阅读**：[[嵌入式学习/当我们谈论内核时, 我们在谈论什么|当我们谈论内核时, 我们在谈论什么]] — 先了解内核与应用、裸机与 RTOS 的关系。
+- **延伸实践**：[[嵌入式学习/(FreeRTOS向)日志库与内存池|(FreeRTOS向)日志库与内存池]] — 把队列、任务通知和缓冲区生命周期用到异步日志中。
+- **应用实例**：[[嵌入式学习/PID输出量与受控量关系非线性怎么办|PID输出量与受控量关系非线性怎么办]] — 文中的控制任务通过队列等待 ADC 数据并接收目标值。
+- **相关实践**：[[嵌入式学习/移植RT-Thread Nano踩坑日记|移植RT-Thread Nano踩坑日记]] — 对照另一种 RTOS 的启动与移植过程。

@@ -1,3 +1,13 @@
+---
+tags:
+  - 编译工具链
+  - GCC
+  - STM32CubeMX
+  - Windows
+  - 故障排查
+date: 2026-02-28
+---
+
 ## 问题
 装了STM32CubeMX之后VSCode里就用不了gcc了。
 
@@ -38,3 +48,8 @@ F:\OpenoCD\bin\libwinpthread-1.dll
 把 `msys64/ucrt/bin` 中的全部dll文件复制到 `msys64/ucrt/lib/gcc/x86_64_mingw32/版本号` 下。这是因为程序在运行时会优先在本目录下查找所需的库文件, 找不到才去path中找, 所以把gcc自己的dll拿过来就可以了。
 
 然后gcc就可以正常编译了。
+
+## 笔记关联
+
+- **后续阅读**：[[嵌入式学习/ArmCC与GCC的printf()|ArmCC与GCC的printf()]] — 编译环境恢复后，再区分不同 C 库的串口输出接口。
+- **相关实践**：[[嵌入式学习/移植RT-Thread Nano踩坑日记|移植RT-Thread Nano踩坑日记]] — 同样涉及 CubeMX 与 GCC/CMake 工程适配，但这里记录的是宿主机 DLL 冲突。
